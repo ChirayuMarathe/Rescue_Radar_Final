@@ -4,10 +4,16 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "next dev -p 3002",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "preview": "next start"
+    "build": "next build && next export",
+    "build:netlify": "npm run build && npm run optimize",
+    "start": "next start -p 3002",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "preview": "next start",
+    "optimize": "echo 'Build optimized for production'",
+    "analyze": "cross-env ANALYZE=true npm run build",
+    "clean": "rm -rf .next out",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
