@@ -8,22 +8,23 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative bg-gradient-to-br from-orange-50 to-pink-50 min-h-screen flex items-center overflow-hidden"
+      className="relative bg-gradient-to-br from-orange-50 to-pink-50 min-h-screen flex items-center overflow-hidden pt-16 lg:pt-0"
     >
       {/* Overlapping background image */}
       <img
         src="/pexels-ifaw-5487067.jpg"
         alt="Hero Background"
-        className="absolute inset-0 w-full h-full object-cover opacity-70 z-0 pointer-events-none"
+        className="absolute inset-0 w-full h-full object-cover opacity-60 lg:opacity-70 z-0 pointer-events-none"
         style={{ objectPosition: "center" }}
       />
       {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/30 z-0" />
+      <div className="absolute inset-0 bg-black/40 lg:bg-black/30 z-0" />
+      
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[60vh]">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg leading-tight">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[70vh] lg:min-h-[60vh]">
+          <div className="space-y-6 lg:space-y-8 text-center lg:text-left">
+            <div className="space-y-3 lg:space-y-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white drop-shadow-lg leading-tight">
                 Every Animal
                 <br />
                 Deserves
@@ -31,7 +32,7 @@ export default function Hero() {
                 <span className="inline-block align-middle">
                   <RotatingText
                     texts={["Protection", "Care", "Rescue", "Hope"]}
-                    mainClassName="text-orange-400 drop-shadow-lg px-2"
+                    mainClassName="text-orange-400 drop-shadow-lg px-1 lg:px-2"
                     staggerFrom={"last"}
                     initial={{ y: "100%", opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -42,26 +43,27 @@ export default function Hero() {
                     rotationInterval={2000}
                   />
                 </span>
-                <Heart className="inline-block h-12 w-12 text-pink-400 ml-2 align-middle drop-shadow-lg" />
+                <Heart className="inline-block h-8 w-8 lg:h-12 lg:w-12 text-pink-400 ml-2 align-middle drop-shadow-lg" />
               </h1>
-              <p className="text-xl text-white/90 max-w-lg drop-shadow">
+              <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-lg lg:max-w-2xl mx-auto lg:mx-0 drop-shadow leading-relaxed px-2 lg:px-0">
                 Report animal cruelty and help us create a safer world for all
                 animals. Our AI-powered system ensures rapid response and proper
                 routing to authorities.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start px-4 lg:px-0">
               <button
                 type="button"
-                className="bg-orange-500 hover:bg-orange-600 text-lg px-8 py-4 shadow-xl shadow-orange-200/40 font-semibold rounded-lg transition-colors"
+                className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4 shadow-xl shadow-orange-200/40 font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 text-white"
                 onClick={() => router.push("/report")}
               >
-                Report Now
+                🚨 Report Now
               </button>
               <button
                 type="button"
-                className="text-lg px-8 py-4 bg-white/80 border-white/60 text-gray-900 hover:bg-white font-semibold shadow rounded-lg transition-colors flex items-center"
+                className="w-full sm:w-auto text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4 bg-white/90 hover:bg-white border-white/60 text-gray-900 font-semibold shadow rounded-lg transition-all duration-300 flex items-center justify-center"
+                onClick={() => router.push("/reports-map")}
               >
                 <Play className="h-5 w-5 mr-2" />
                 Learn More

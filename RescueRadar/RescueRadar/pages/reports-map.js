@@ -92,18 +92,73 @@ function ReportsMapPage() {
       setError(null);
     } catch (err) {
       console.error('Error fetching reports:', err);
+      
+      // Use fallback demo data when API fails
+      const fallbackReports = [
+        {
+          id: 'demo-001',
+          description: 'Injured stray dog found near Mumbai Central Station. The dog appears to have a leg injury and is limping. Local residents have been feeding it but professional medical attention is needed.',
+          location: 'Mumbai Central Railway Station, Mumbai, Maharashtra',
+          coordinates: { lat: 19.0707, lng: 72.8203 },
+          urgency_level: 'high',
+          animal_type: 'dog',
+          situation_type: 'injury',
+          created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+          contact_info: {
+            name: 'Concerned Citizen',
+            phone: '+91-9876543210'
+          }
+        },
+        {
+          id: 'demo-002',
+          description: 'Cat stuck on high-rise building terrace for over 24 hours. Building residents report the cat appears weak and hasn\'t eaten. Fire department assistance may be required.',
+          location: 'Worli Sea Face, Mumbai, Maharashtra',
+          coordinates: { lat: 19.0176, lng: 72.8151 },
+          urgency_level: 'emergency',
+          animal_type: 'cat',
+          situation_type: 'rescue',
+          created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
+          contact_info: {
+            name: 'Building Society',
+            email: 'society@example.com'
+          }
+        },
+        {
+          id: 'demo-003',
+          description: 'Multiple street dogs showing signs of poisoning in residential area. Three dogs found unconscious, immediate veterinary attention required.',
+          location: 'Bandra West, Mumbai, Maharashtra',
+          coordinates: { lat: 19.0596, lng: 72.8295 },
+          urgency_level: 'emergency',
+          animal_type: 'dog',
+          situation_type: 'abuse',
+          created_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
+          contact_info: {
+            name: 'Animal Welfare Volunteer',
+            phone: '+91-9876543211',
+            email: 'volunteer@animalcare.org'
+          }
+        },
+        {
+          id: 'demo-004',
+          description: 'Abandoned kitten found in cardboard box near market area. Kitten appears very young and needs immediate care and feeding.',
+          location: 'Crawford Market, Mumbai, Maharashtra',
+          coordinates: { lat: 18.9467, lng: 72.8342 },
+          urgency_level: 'normal',
+          animal_type: 'cat',
+          situation_type: 'abandonment',
+          created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+          contact_info: {
+            name: 'Market Vendor',
+            phone: '+91-9876543212'
+          }
+        }
+      ];
+      
+      setReports(fallbackReports);
       setError({
-        message: 'Failed to load reports. Please try again.',
+        message: 'Using demo data - API connection failed. The map shows sample reports for demonstration.',
         retry: fetchReports
       });
-      // Auto-retry with exponential backoff (up to 3 retries)
-      if (retryCount < 3) {
-        const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
-        setTimeout(() => {
-          setRetryCount(prev => prev + 1);
-          fetchReports();
-        }, delay);
-      }
     } finally {
       setIsLoading(false);
     }
@@ -247,9 +302,40 @@ function ReportsMapPage() {
       return;
     }
 
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      console.error('Google Maps API key not found');
+      setError({
+        message: 'Google Maps API key is missing. Please configure NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in your environment variables.',
+        retry: null
+      });
+      setIsMapLoading(false);
+      return;
+    }
+
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.onload = initializeMap;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geometry`;
+    script.onload = () => {
+      try {
+        initializeMap();
+        setIsMapLoading(false);
+      } catch (error) {
+        console.error('Error initializing map after script load:', error);
+        setError({
+          message: 'Failed to initialize Google Maps. Please check your API key and try again.',
+          retry: loadGoogleMaps
+        });
+        setIsMapLoading(false);
+      }
+    };
+    script.onerror = () => {
+      console.error('Failed to load Google Maps script');
+      setError({
+        message: 'Failed to load Google Maps. Please check your internet connection and API key.',
+        retry: loadGoogleMaps
+      });
+      setIsMapLoading(false);
+    };
     document.head.appendChild(script);
   };
 

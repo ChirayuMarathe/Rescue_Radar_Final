@@ -1,3 +1,146 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom mobile-first responsive styles */
+@layer base {
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+  }
+
+  /* Mobile viewport optimization */
+  @media (max-width: 767px) {
+    html {
+      font-size: 14px;
+    }
+  }
+}
+
+@layer components {
+  /* Mobile-first button styles */
+  .btn-primary {
+    @apply bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-900 font-semibold px-4 py-2 rounded-lg transition-all duration-300 border border-gray-300 shadow-sm;
+  }
+
+  /* Mobile-friendly form inputs */
+  .form-input {
+    @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all;
+  }
+  
+  @media (min-width: 768px) {
+    .form-input {
+      @apply text-sm;
+    }
+  }
+
+  /* Mobile navigation styles */
+  .mobile-nav-open {
+    @apply overflow-hidden;
+  }
+
+  /* Responsive text sizing */
+  .responsive-text-xl {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+  
+  .responsive-text-2xl {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+  
+  .responsive-text-3xl {
+    @apply text-2xl sm:text-3xl lg:text-4xl;
+  }
+}
+
+@layer utilities {
+  /* Touch-friendly utilities */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Safe area padding for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Mobile scroll utilities */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  
+  /* Mobile-specific hiding/showing */
+  .mobile-only {
+    @apply block lg:hidden;
+  }
+  
+  .desktop-only {
+    @apply hidden lg:block;
+  }
+
+  /* Improved focus styles for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
+  }
+}
+
+/* Mobile-specific animations */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Mobile optimization for maps */
+.map-container {
+  touch-action: pan-x pan-y;
+}
+
+/* Ensure proper mobile viewport handling */
+@media screen and (max-width: 767px) {
+  .container {
+    @apply px-4;
+  }
+  
+  /* Make buttons more touch-friendly on mobile */
+  button, .btn, input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve form field touch targets */
+  input, select, textarea {
+    min-height: 44px;
+  }
+}
+
+/* PWA and mobile browser optimizations */
+@media screen and (display-mode: standalone) {
+  .pwa-header {
+    padding-top: env(safe-area-inset-top);
+  }
+}

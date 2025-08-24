@@ -316,11 +316,21 @@ export function ReportForm() {
     if (fileInput) fileInput.value = "";
   };
   return (
-    <section className="max-w-3xl mx-auto py-10">
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <form onSubmit={handleSubmit} className="space-y-8">
+    <section className="max-w-4xl mx-auto py-6 lg:py-10 px-4 sm:px-6 lg:px-8 pt-20 lg:pt-10">
+      <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
+        {/* Header */}
+        <div className="mb-6 lg:mb-8 text-center lg:text-left">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            🚨 Report Animal Emergency
+          </h1>
+          <p className="text-sm sm:text-base text-gray-600">
+            Fill out this form to report animal cruelty or emergency situations. All reports are processed immediately.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-8">
           <div className="space-y-2">
-            <label htmlFor="description" className="text-base font-medium">
+            <label htmlFor="description" className="text-sm sm:text-base font-medium text-gray-700">
               Description of Incident *
             </label>
             <textarea
@@ -335,23 +345,22 @@ export function ReportForm() {
               }}
               required
               rows={4}
-              className={`resize-none w-full border rounded-lg p-2 ${
+              className={`resize-none w-full border rounded-lg p-3 text-sm sm:text-base ${
                 errors.description ? "border-red-500" : "border-gray-300"
-              }`}
+              } focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
             />
             {errors.description && (
-              <p className="text-red-500 text-sm">{errors.description}</p>
+              <p className="text-red-500 text-xs sm:text-sm">{errors.description}</p>
             )}
           </div>
-          {/* ...existing code... */}
 
           <div className="space-y-2">
-            <label htmlFor="location" className="text-base font-medium">
+            <label htmlFor="location" className="text-sm sm:text-base font-medium text-gray-700">
               Location/Address *
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <MapPin className="absolute left-3 top-3 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                 <input
                   id="location"
                   type="text"
@@ -364,82 +373,83 @@ export function ReportForm() {
                     }
                   }}
                   required
-                  className={`pl-10 w-full border rounded-lg p-2 ${
+                  className={`pl-10 w-full border rounded-lg p-3 text-sm sm:text-base ${
                     errors.location ? "border-red-500" : "border-gray-300"
-                  }`}
+                  } focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
                 />
               </div>
               <button
                 type="button"
                 onClick={getCurrentLocation}
                 disabled={isGettingLocation}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 sm:px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm whitespace-nowrap"
               >
                 {isGettingLocation ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Navigation className="h-4 w-4" />
                 )}
-                {isGettingLocation ? "Getting..." : "Use Current Location"}
+                {isGettingLocation ? "Getting..." : "Current Location"}
               </button>
             </div>
             {errors.location && (
-              <p className="text-red-500 text-sm">{errors.location}</p>
+              <p className="text-red-500 text-xs sm:text-sm">{errors.location}</p>
             )}
             {formData.coordinates && (
-              <p className="text-sm text-green-600">
+              <p className="text-xs sm:text-sm text-green-600">
                 📍 Location detected: {formData.coordinates.lat.toFixed(6)},{" "}
                 {formData.coordinates.lng.toFixed(6)}
               </p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="urgencyLevel" className="text-base font-medium">
-              Urgency Level
-            </label>
-            <select
-              id="urgencyLevel"
-              value={formData.urgencyLevel}
-              onChange={(e) =>
-                setFormData({ ...formData, urgencyLevel: e.target.value })
-              }
-              className="w-full border border-gray-300 rounded-lg p-2"
-            >
-              <option value="low">Low - Can wait</option>
-              <option value="normal">Normal - Within 24 hours</option>
-              <option value="high">High - Urgent attention needed</option>
-              <option value="emergency">
-                Emergency - Immediate action required
-              </option>
-            </select>
+          {/* Form grid for better mobile layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+            <div className="space-y-2">
+              <label htmlFor="urgencyLevel" className="text-sm sm:text-base font-medium text-gray-700">
+                Urgency Level
+              </label>
+              <select
+                id="urgencyLevel"
+                value={formData.urgencyLevel}
+                onChange={(e) =>
+                  setFormData({ ...formData, urgencyLevel: e.target.value })
+                }
+                className="w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              >
+                <option value="low">🟢 Low - Can wait</option>
+                <option value="normal">🟡 Normal - Within 24 hours</option>
+                <option value="high">🟠 High - Urgent attention needed</option>
+                <option value="emergency">🔴 Emergency - Immediate action required</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="animalType" className="text-sm sm:text-base font-medium text-gray-700">
+                Animal Type
+              </label>
+              <select
+                id="animalType"
+                value={formData.animalType}
+                onChange={(e) =>
+                  setFormData({ ...formData, animalType: e.target.value })
+                }
+                className="w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              >
+                <option value="">Select animal type</option>
+                <option value="dog">🐕 Dog</option>
+                <option value="cat">🐱 Cat</option>
+                <option value="bird">🐦 Bird</option>
+                <option value="horse">🐎 Horse</option>
+                <option value="livestock">🐄 Livestock</option>
+                <option value="wildlife">🦌 Wildlife</option>
+                <option value="other">🐾 Other</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="animalType" className="text-base font-medium">
-              Animal Type
-            </label>
-            <select
-              id="animalType"
-              value={formData.animalType}
-              onChange={(e) =>
-                setFormData({ ...formData, animalType: e.target.value })
-              }
-              className="w-full border border-gray-300 rounded-lg p-2"
-            >
-              <option value="">Select animal type</option>
-              <option value="dog">Dog</option>
-              <option value="cat">Cat</option>
-              <option value="bird">Bird</option>
-              <option value="horse">Horse</option>
-              <option value="livestock">Livestock</option>
-              <option value="wildlife">Wildlife</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="situationType" className="text-base font-medium">
+            <label htmlFor="situationType" className="text-sm sm:text-base font-medium text-gray-700">
               Situation Type
             </label>
             <select
@@ -448,50 +458,50 @@ export function ReportForm() {
               onChange={(e) =>
                 setFormData({ ...formData, situationType: e.target.value })
               }
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
               <option value="">Select situation</option>
-              <option value="abuse">Active Abuse</option>
-              <option value="neglect">Neglect</option>
-              <option value="injury">Injury/Medical</option>
-              <option value="abandonment">Abandonment</option>
-              <option value="hoarding">Hoarding</option>
-              <option value="fighting">Animal Fighting</option>
-              <option value="other">Other</option>
+              <option value="abuse">⚠️ Active Abuse</option>
+              <option value="neglect">😢 Neglect</option>
+              <option value="injury">🩹 Injury/Medical</option>
+              <option value="abandonment">🏠 Abandonment</option>
+              <option value="hoarding">📦 Hoarding</option>
+              <option value="fighting">⚔️ Animal Fighting</option>
+              <option value="other">❓ Other</option>
             </select>
           </div>
 
           {/* Image Upload Section */}
           <div className="space-y-2">
-            <label htmlFor="image-upload" className="text-base font-medium">
-              Upload Photo (Optional)
+            <label htmlFor="image-upload" className="text-sm sm:text-base font-medium text-gray-700">
+              📷 Upload Photo (Optional)
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6">
               {imagePreview ? (
                 <div className="space-y-3">
                   <div className="relative">
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="max-w-full h-48 object-cover rounded-lg mx-auto"
+                      className="max-w-full h-32 sm:h-48 object-cover rounded-lg mx-auto"
                     />
                     <button
                       type="button"
                       onClick={clearImage}
-                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 text-xs"
+                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 text-xs sm:text-sm w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center"
                     >
                       ✕
                     </button>
                   </div>
-                  <p className="text-sm text-gray-600 text-center">
+                  <p className="text-xs sm:text-sm text-gray-600 text-center">
                     Image ready for upload. Click the ✕ to remove.
                   </p>
                 </div>
               ) : (
                 <div className="text-center">
-                  <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
+                  <Upload className="mx-auto h-6 w-6 sm:h-8 sm:w-8 text-gray-400 mb-2" />
                   <label htmlFor="image-upload" className="cursor-pointer">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-xs sm:text-sm text-gray-600">
                       Click to upload or drag and drop a photo
                     </span>
                     <br />
@@ -510,17 +520,18 @@ export function ReportForm() {
               )}
             </div>
             {errors.image && (
-              <p className="text-red-500 text-sm">{errors.image}</p>
+              <p className="text-red-500 text-xs sm:text-sm">{errors.image}</p>
             )}
           </div>
 
+          {/* Contact Information */}
           <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold mb-4">
-              Contact Information (Optional)
+            <h3 className="text-base sm:text-lg font-semibold mb-4 text-gray-900">
+              📞 Contact Information (Optional)
             </h3>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="contactName">Your Name</label>
+                <label htmlFor="contactName" className="text-sm sm:text-base font-medium text-gray-700">Your Name</label>
                 <input
                   id="contactName"
                   type="text"
@@ -532,63 +543,70 @@ export function ReportForm() {
                       contactName: e.target.value,
                     })
                   }
-                  className="w-full border border-gray-300 rounded-lg p-2"
+                  className="w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
-              <div className="space-y-2">
-                <label htmlFor="contactPhone">Phone Number</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <input
-                    id="contactPhone"
-                    type="text"
-                    placeholder="(123) 456-7890"
-                    value={formData.contactPhone}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        contactPhone: e.target.value,
-                      })
-                    }
-                    className="pl-10 w-full border border-gray-300 rounded-lg p-2"
-                  />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="contactPhone" className="text-sm sm:text-base font-medium text-gray-700">Phone Number</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <input
+                      id="contactPhone"
+                      type="text"
+                      placeholder="(123) 456-7890"
+                      value={formData.contactPhone}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          contactPhone: e.target.value,
+                        })
+                      }
+                      className="pl-10 w-full border border-gray-300 rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.contactPhone && (
+                    <p className="text-red-500 text-xs sm:text-sm">{errors.contactPhone}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <label htmlFor="contactEmail" className="text-sm sm:text-base font-medium text-gray-700">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <input
+                      id="contactEmail"
+                      type="email"
+                      placeholder="your.email@example.com"
+                      value={formData.contactEmail}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          contactEmail: e.target.value,
+                        });
+                        if (errors.contactEmail) {
+                          setErrors({ ...errors, contactEmail: null });
+                        }
+                      }}
+                      className={`pl-10 w-full border rounded-lg p-3 text-sm sm:text-base focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+                        errors.contactEmail ? "border-red-500" : "border-gray-300"
+                      }`}
+                    />
+                  </div>
+                  {errors.contactEmail && (
+                    <p className="text-red-500 text-xs sm:text-sm">{errors.contactEmail}</p>
+                  )}
                 </div>
               </div>
-            </div>
-            <div className="space-y-2 mt-4">
-              <label htmlFor="contactEmail">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  id="contactEmail"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={formData.contactEmail}
-                  onChange={(e) => {
-                    setFormData({
-                      ...formData,
-                      contactEmail: e.target.value,
-                    });
-                    if (errors.contactEmail) {
-                      setErrors({ ...errors, contactEmail: null });
-                    }
-                  }}
-                  className={`pl-10 w-full border rounded-lg p-2 ${
-                    errors.contactEmail ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-              </div>
-              {errors.contactEmail && (
-                <p className="text-red-500 text-sm">{errors.contactEmail}</p>
-              )}
             </div>
           </div>
 
           {/* AI Analysis Section */}
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-3">
-              <h4 className="text-lg font-semibold text-blue-900">
-                AI Analysis Preview
+          <div className="bg-blue-50 p-4 sm:p-6 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-3">
+              <h4 className="text-base sm:text-lg font-semibold text-blue-900">
+                🤖 AI Analysis Preview
               </h4>
               <button
                 type="button"
@@ -596,23 +614,23 @@ export function ReportForm() {
                 disabled={
                   isSubmitting || !formData.description || !formData.location
                 }
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 w-full sm:w-auto"
               >
                 {isSubmitting ? "Analyzing..." : "Get AI Analysis"}
               </button>
             </div>
 
             {errors.ai && (
-              <p className="text-red-500 text-sm mb-3">{errors.ai}</p>
+              <p className="text-red-500 text-xs sm:text-sm mb-3">{errors.ai}</p>
             )}
 
             {aiAnalysis && (
-              <div className="bg-white p-4 rounded-lg border">
-                <div className="space-y-2">
-                  <div>
-                    <span className="font-medium text-gray-700">Severity:</span>
+              <div className="bg-white p-3 sm:p-4 rounded-lg border">
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">Severity:</span>
                     <span
-                      className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                      className={`px-2 py-1 rounded-full text-xs font-medium w-fit ${
                         aiAnalysis.severity === "high"
                           ? "bg-red-100 text-red-800"
                           : aiAnalysis.severity === "medium"
@@ -623,20 +641,20 @@ export function ReportForm() {
                       {aiAnalysis.severity}
                     </span>
                   </div>
-                  <div>
-                    <span className="font-medium text-gray-700">
+                  <div className="space-y-1">
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
                       Recommended Action:
                     </span>
-                    <span className="ml-2 text-gray-600">
+                    <p className="text-gray-600 text-sm sm:text-base">
                       {aiAnalysis.recommended_action}
-                    </span>
+                    </p>
                   </div>
                   {aiAnalysis.summary && (
-                    <div>
-                      <span className="font-medium text-gray-700">
+                    <div className="space-y-1">
+                      <span className="font-medium text-gray-700 text-sm sm:text-base">
                         Summary:
                       </span>
-                      <p className="mt-1 text-gray-600">{aiAnalysis.summary}</p>
+                      <p className="text-gray-600 text-sm sm:text-base">{aiAnalysis.summary}</p>
                     </div>
                   )}
                 </div>
@@ -644,38 +662,47 @@ export function ReportForm() {
             )}
           </div>
 
-          <div className="bg-orange-50 p-4 rounded-lg">
-            <p className="text-sm text-orange-800">
-              <strong>Emergency:</strong> If this is an immediate emergency
+          {/* Emergency Notice */}
+          <div className="bg-orange-50 p-4 sm:p-6 rounded-lg border-l-4 border-orange-400">
+            <p className="text-xs sm:text-sm text-orange-800 leading-relaxed">
+              <strong>🚨 Emergency:</strong> If this is an immediate emergency
               where an animal is in immediate danger, please call local
               authorities (911) first, then submit this report.
             </p>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={
               isSubmitting || !formData.description || !formData.location
             }
-            className="w-full bg-orange-500 hover:bg-orange-600 text-lg py-6 text-white font-semibold rounded-lg transition-colors"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-base sm:text-lg py-4 sm:py-6 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
           >
-            {isSubmitting ? "Submitting Report..." : "Submit Report"}
+            {isSubmitting ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Submitting Report...
+              </div>
+            ) : (
+              "🚨 Submit Report"
+            )}
           </button>
 
           {/* Error and Success Messages */}
           {errors.submit && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-700 font-medium">Error:</p>
-              <p className="text-red-600">{errors.submit}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
+              <p className="text-red-700 font-medium text-sm sm:text-base">Error:</p>
+              <p className="text-red-600 text-sm sm:text-base mt-1">{errors.submit}</p>
             </div>
           )}
 
           {submitSuccess && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <h4 className="text-green-800 font-bold mb-2">
-                Report Submitted Successfully!
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 sm:p-6">
+              <h4 className="text-green-800 font-bold mb-2 text-base sm:text-lg">
+                ✅ Report Submitted Successfully!
               </h4>
-              <div className="space-y-2 text-green-700">
+              <div className="space-y-2 text-green-700 text-sm sm:text-base">
                 <p>
                   <strong>Report ID:</strong> {submitSuccess.reportId}
                 </p>
@@ -691,7 +718,7 @@ export function ReportForm() {
                     <img
                       src={submitSuccess.qrCodeUrl}
                       alt="Report QR Code"
-                      className="mt-2 border rounded-lg"
+                      className="mt-2 border rounded-lg mx-auto sm:mx-0"
                       style={{ maxWidth: "150px" }}
                     />
                   </div>
