@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+  environment = { NODE_VERSION = "18.20.2" }
+
+[dev]
+  command = "npm run dev"
+  port = 3002
+
+[[redirects]]
+  from = "/api/*"
+  to = "http://localhost:5000/api/:splat"
+  status = 200
+  force = true
