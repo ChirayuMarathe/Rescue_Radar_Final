@@ -25,15 +25,28 @@ export function Navbar() {
     closeMenu();
     
     if (linkId === "home") {
-      router.push("/");
+      // If already on home page, just scroll to top
+      if (router.pathname === "/") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        router.push("/");
+      }
     } else {
-      router.push("/");
-      setTimeout(() => {
+      // For other links, scroll to the section
+      if (router.pathname !== "/") {
+        router.push("/");
+        setTimeout(() => {
+          const el = document.getElementById(linkId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 100);
+      } else {
         const el = document.getElementById(linkId);
         if (el) {
           el.scrollIntoView({ behavior: "smooth" });
         }
-      }, 100);
+      }
     }
   };
 

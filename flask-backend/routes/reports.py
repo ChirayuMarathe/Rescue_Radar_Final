@@ -8,11 +8,18 @@ from email_service import send_rescue_team_email, send_user_confirmation_email
 
 reports_bp = Blueprint('reports', __name__)
 
-# Initialize Supabase client
-supabase: Client = create_client(
-    os.getenv('SUPABASE_URL'),
-    os.getenv('SUPABASE_API_KEY')
-)
+# Initialize Supabase client with fallback for demo mode
+try:
+    supabase_url = os.getenv('SUPABASE_URL')
+    supabase_key = os.getenv('SUPABASE_API_KEY')
+    if supabase_url and supabase_key:
+        supabase: Client = create_client(supabase_url, supabase_key)
+    else:
+        supabase = None
+        print("Running in demo mode - no database connection")
+except Exception as e:
+    print(f"Supabase initialization failed: {e}")
+    supabase = None
 
 @reports_bp.route('/save-report', methods=['POST'])
 def save_report():
@@ -57,16 +64,19 @@ def save_report():
             'status': 'active'
         }
         
-        # Try to save to Supabase first
+        # Try to save to Supabase first (only if available)
         saved_to_db = False
-        try:
-            # Use the new 'reports' table
-            result = supabase.table('reports').insert(report_data).execute()
-            if result.data:
-                saved_to_db = True
-                saved_report = result.data[0]
-        except Exception as db_error:
-            print(f"Database error: {str(db_error)}")
+        if supabase:
+            try:
+                # Use the new 'reports' table
+                result = supabase.table('reports').insert(report_data).execute()
+                if result.data:
+                    saved_to_db = True
+                    saved_report = result.data[0]
+            except Exception as db_error:
+                print(f"Database error: {str(db_error)}")
+        else:
+            print("Database not available - using local storage")
         
         # If database failed, save to backup file
         if not saved_to_db:
@@ -186,95 +196,64 @@ def save_report():
             'error': str(e)
         }), 500
 
+# Cache for demo data to reduce repeated processing
+_demo_cache = None
+_cache_timestamp = None
+
 @reports_bp.route('/reports/active', methods=['GET'])
 def get_active_reports():
     """Get all active reports from database"""
+    global _demo_cache, _cache_timestamp
+    
     try:
-        # Try to fetch from Supabase first
-        try:
-            print("Fetching active reports from Supabase...")
-            result = supabase.table('reports').select('*').eq('status', 'active').order('created_at', desc=True).limit(100).execute()
-            
-            # Log the raw result for debugging
-            print(f"Supabase response: {result}")
-            
-            if hasattr(result, 'data') and result.data:
-                reports = []
-                for report in result.data:
-                    try:
-                        # Safely access report data with defaults
-                        report_data = {
-                            'id': report.get('id', str(uuid.uuid4())),  # Generate new ID if missing
-                            'description': report.get('description', 'No description provided'),
-                            'location': report.get('location', 'Location not specified'),
-                            'coordinates': report.get('coordinates', {'lat': 40.7128, 'lng': -74.0060}),
-                            'urgency_level': report.get('urgency_level', 'normal'),
-                            'animal_type': report.get('animal_type'),
-                            'situation_type': report.get('situation_type'),
-                            'created_at': report.get('created_at', datetime.now().isoformat()),
-                            'contact_info': {
-                                'name': report.get('contact_name'),
-                                'email': report.get('contact_email'),
-                                'phone': report.get('contact_phone')
-                            },
-                            'image_url': report.get('image_url'),
-                            'ai_analysis': report.get('ai_analysis')
-                        }
-                        reports.append(report_data)
-                    except Exception as report_error:
-                        print(f"Error processing report: {str(report_error)}")
-                        print(f"Problematic report data: {report}")
-                        continue
-                
-                return jsonify({
-                    'success': True,
-                    'reports': reports,
-                    'total': len(reports)
-                })
-                
-        except Exception as db_error:
-            print(f"Database error: {str(db_error)}")
-        
-        # If database fails, try to load from backup file
-        import json
-        reports_file = 'reports_backup.json'
-        
-        if os.path.exists(reports_file):
+        # Try to fetch from Supabase first (only if available)
+        if supabase:
             try:
-                with open(reports_file, 'r') as f:
-                    backup_reports = json.load(f)
+                result = supabase.table('reports').select('*').eq('status', 'active').order('created_at', desc=True).limit(100).execute()
                 
-                # Format backup reports for frontend
-                reports = []
-                for report in backup_reports:
-                    reports.append({
-                        'id': report['id'],
-                        'description': report['description'],
-                        'location': report['location'],
-                        'coordinates': report.get('coordinates', {'lat': 40.7128, 'lng': -74.0060}),
-                        'urgency_level': report.get('urgency_level', 'normal'),
-                        'animal_type': report.get('animal_type'),
-                        'situation_type': report.get('situation_type'),
-                        'created_at': report.get('created_at', datetime.now().isoformat()),
-                        'contact_info': {
-                            'name': report.get('contact_name'),
-                            'email': report.get('contact_email'),
-                            'phone': report.get('contact_phone')
-                        },
-                        'image_url': report.get('image_url'),
-                        'ai_analysis': report.get('ai_analysis')
+                if hasattr(result, 'data') and result.data:
+                    reports = []
+                    for report in result.data:
+                        try:
+                            # Safely access report data with defaults
+                            report_data = {
+                                'id': report.get('id', str(uuid.uuid4())),
+                                'description': report.get('description', 'No description provided'),
+                                'location': report.get('location', 'Location not specified'),
+                                'coordinates': report.get('coordinates', {'lat': 40.7829, 'lng': -73.9654}),
+                                'urgency_level': report.get('urgency_level', 'normal'),
+                                'animal_type': report.get('animal_type'),
+                                'situation_type': report.get('situation_type'),
+                                'created_at': report.get('created_at', datetime.now().isoformat()),
+                                'contact_info': {
+                                    'name': report.get('contact_name'),
+                                    'email': report.get('contact_email'),
+                                    'phone': report.get('contact_phone')
+                                },
+                                'image_url': report.get('image_url'),
+                                'ai_analysis': report.get('ai_analysis')
+                            }
+                            reports.append(report_data)
+                        except Exception as report_error:
+                            print(f"Error processing report: {str(report_error)}")
+                            continue
+                    
+                    return jsonify({
+                        'success': True,
+                        'reports': reports,
+                        'total': len(reports)
                     })
-                
-                return jsonify({
-                    'success': True,
-                    'reports': reports,
-                    'total': len(reports),
-                    'source': 'backup_file'
-                })
-            except Exception as file_error:
-                print(f"Backup file error: {str(file_error)}")
+                    
+            except Exception as db_error:
+                print(f"Database error: {str(db_error)}")
+        else:
+            print("Database not available - using demo data")
         
-        # Fallback to demo data for NYC area
+        # Check if we have recent cached demo data (cache for 30 seconds)
+        if _demo_cache and _cache_timestamp and (datetime.now() - _cache_timestamp).seconds < 30:
+            return jsonify(_demo_cache)
+        
+        # Generate demo data for NYC area (cached)
         demo_reports = [
             {
                 'id': 'demo-001',
@@ -287,10 +266,10 @@ def get_active_reports():
                 'created_at': datetime.now().isoformat(),
                 'contact_info': {
                     'name': 'Demo Reporter',
-                    'email': 'demo@example.com',
+                    'email': 'demo@rescueradar.com',
                     'phone': '+1-555-0123'
                 },
-                'image_url': None,
+                'image_url': '/placeholder.jpg',
                 'ai_analysis': {'severity': 'high', 'confidence': 0.85}
             },
             {
@@ -304,21 +283,59 @@ def get_active_reports():
                 'created_at': (datetime.now() - timedelta(hours=2)).isoformat(),
                 'contact_info': {
                     'name': 'Demo Reporter 2',
-                    'email': 'demo2@example.com',
+                    'email': 'demo2@rescueradar.com',
                     'phone': '+1-555-0124'
                 },
-                'image_url': None,
+                'image_url': '/placeholder.jpg',
                 'ai_analysis': {'severity': 'medium', 'confidence': 0.75}
+            },
+            {
+                'id': 'demo-003',
+                'description': 'Abandoned puppies found in cardboard box near Times Square. Approximately 6-8 weeks old, need immediate care.',
+                'location': 'Times Square, Manhattan, NY',
+                'coordinates': {'lat': 40.7580, 'lng': -73.9855},
+                'urgency_level': 'high',
+                'animal_type': 'dog',
+                'situation_type': 'abandonment',
+                'created_at': (datetime.now() - timedelta(hours=1)).isoformat(),
+                'contact_info': {
+                    'name': 'Demo Reporter 3',
+                    'email': 'demo3@rescueradar.com',
+                    'phone': '+1-555-0125'
+                },
+                'image_url': '/placeholder.jpg',
+                'ai_analysis': {'severity': 'high', 'confidence': 0.92}
+            },
+            {
+                'id': 'demo-004',
+                'description': 'Lost bird (parrot) spotted in Prospect Park. Appears to be domestic and may be someones pet.',
+                'location': 'Prospect Park, Brooklyn, NY',
+                'coordinates': {'lat': 40.6602, 'lng': -73.9690},
+                'urgency_level': 'normal',
+                'animal_type': 'bird',
+                'situation_type': 'lost_pet',
+                'created_at': (datetime.now() - timedelta(hours=4)).isoformat(),
+                'contact_info': {
+                    'name': 'Demo Reporter 4',
+                    'email': 'demo4@rescueradar.com',
+                    'phone': '+1-555-0126'
+                },
+                'image_url': '/placeholder.jpg',
+                'ai_analysis': {'severity': 'low', 'confidence': 0.68}
             }
         ]
         
-        return jsonify({
+        # Cache the response
+        _demo_cache = {
             'success': True,
             'reports': demo_reports,
             'total': len(demo_reports),
             'source': 'demo_data',
-            'message': 'Using demo data - database not available'
-        })
+            'message': 'Using demo data - database connection unavailable'
+        }
+        _cache_timestamp = datetime.now()
+        
+        return jsonify(_demo_cache)
             
     except Exception as e:
         print(f"Get Reports Error: {str(e)}")
