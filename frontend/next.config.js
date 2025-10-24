@@ -7,7 +7,7 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    domains: ['localhost', 'rescueradar.netlify.app'],
+    domains: ['localhost', 'rescueradar.netlify.app', 'rescueradar-backend.vercel.app'],
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
@@ -56,14 +56,23 @@ const nextConfig = {
     ];
   },
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: process.env.NODE_ENV === 'production' 
-          ? 'https://rescueradar-backend.vercel.app/api/:path*'
-          : 'http://localhost:5000/api/:path*',
-      },
-    ];
+    return {
+      beforeFiles: [
+        // Handle static files
+        {
+          source: '/static/:path*',
+          destination: '/static/:path*'
+        }
+      ],
+      fallback: [
+        {
+          source: '/api/:path*',
+          destination: process.env.NODE_ENV === 'production' 
+            ? 'https://rescueradar-backend.vercel.app/api/:path*'
+            : 'http://localhost:5000/api/:path*',
+        },
+      ],
+    };
   },
 }
 

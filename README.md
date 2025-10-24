@@ -26,6 +26,7 @@ Rescue-Radar/
 ## 🚀 Quick Start
 
 ### Frontend Setup
+
 ```bash
 cd frontend
 npm install
@@ -34,6 +35,7 @@ npm run dev
 ```
 
 ### Backend Setup
+
 ```bash
 cd backend
 pip install -r requirements.txt
@@ -44,6 +46,7 @@ python app.py
 ## 🛠️ Technologies
 
 **Frontend:**
+
 - Next.js 15.3
 - React 19
 - Tailwind CSS
@@ -52,6 +55,7 @@ python app.py
 - Supabase (database)
 
 **Backend:**
+
 - Flask 2.3
 - Python 3.x
 - Twilio (SMS/WhatsApp)
@@ -61,6 +65,7 @@ python app.py
 ## 📝 Environment Variables
 
 ### Frontend (.env.local)
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
@@ -68,6 +73,7 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
 ```
 
 ### Backend (.env)
+
 ```
 SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_key
@@ -84,6 +90,7 @@ GROQ_API_KEY=your_groq_key
 ## 📚 Documentation
 
 See `docs/` folder for detailed guides:
+
 - `DEPLOYMENT_OPTIMIZATION_COMPLETE.md` - Deployment guide
 - `MOBILE_RESPONSIVENESS_IMPLEMENTATION.md` - Responsive design details
 
@@ -95,4 +102,3 @@ See `docs/` folder for detailed guides:
 ## 📄 License
 
 MIT License
-

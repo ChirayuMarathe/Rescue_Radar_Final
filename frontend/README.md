@@ -5,12 +5,15 @@ A Next.js-based web application for disaster management and rescue coordination 
 ## 🚀 Quick Start
 
 ### Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### Environment Setup
+
 Create `.env.local` in this directory:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -18,12 +21,15 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
 ```
 
 ### Development Server
+
 ```bash
 npm run dev
 ```
+
 Open [http://localhost:3002](http://localhost:3002) in your browser.
 
 ### Build for Production
+
 ```bash
 npm run build
 npm start
@@ -85,6 +91,7 @@ frontend/
 ## 🌐 Deployment
 
 ### Deploy to Netlify
+
 1. Connect this repository to Netlify
 2. Set build command: `npm run build`
 3. Set publish directory: `.next`
@@ -106,6 +113,7 @@ For more details, see `netlify.toml`
 ## 🔗 API Integration
 
 The frontend connects to the Flask backend at:
+
 - Development: `http://localhost:5000`
 - Production: Backend URL from environment
 

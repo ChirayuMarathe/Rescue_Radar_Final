@@ -1,0 +1,10 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "env": {
+    "NODE_VERSION": "18.20.2",
+    "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY": "@NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"
+  }
+}

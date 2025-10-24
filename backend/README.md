@@ -5,6 +5,7 @@ A Flask-based REST API backend for the RescueRadar application.
 ## Setup
 
 1. **Install Python dependencies:**
+
    ```bash
    pip install -r requirements.txt
    ```
@@ -22,21 +23,26 @@ The API will be available at `http://localhost:5000`
 ## API Endpoints
 
 ### Health Check
+
 - `GET /api/health` - Check service health
 
 ### Reports
+
 - `POST /api/save-report` - Save a new report
 - `GET /api/reports/active` - Get all active reports
 
 ### AI Analysis
+
 - `POST /api/ai-analysis` - Analyze report using AI
 
 ### Notifications
+
 - `POST /api/email-notify` - Send email notification
 - `POST /api/whatsapp-notify` - Send WhatsApp notification
 - `GET /api/generate-qr` - Generate QR code
 
 ### File Upload
+
 - `POST /api/upload-image` - Upload image files
 - `GET /api/uploads/<filename>` - Serve uploaded files
 

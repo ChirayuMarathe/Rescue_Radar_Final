@@ -7,13 +7,9 @@
   command = "npm run dev"
   port = 3002
 
-# API proxy for development - Netlify will use environment variables in production
-[[redirects]]
-  from = "/api/*"
-  to = "https://rescueradar-backend.vercel.app/api/:splat"
-  status = 200
-  force = true
-  condition = "Country=US,IN"
+# Install Netlify Next.js plugin
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Fallback for missing images
 [[redirects]]
@@ -21,14 +17,25 @@
   to = "/pexels-ifaw-5487067.jpg"
   status = 200
 
-# Performance optimizations
+# API proxy - redirect to backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://rescueradar-backend.vercel.app/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback - important for Next.js routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  condition = "!req.headers.accept || req.headers.accept.includes(\"text/html\")"
+
+# Cache headers for static assets
 [[headers]]
-  for = "/*"
+  for = "/_next/static/*"
   [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/static/*"
@@ -36,29 +43,25 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/_next/static/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
   for = "/*.jpg"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/*.png"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/*.svg"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=604800"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Edge functions for better performance
-[edge_functions]
-  path = "/api/*"
-  function = "api-proxy"
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
