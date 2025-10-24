@@ -43,16 +43,21 @@ The API will be available at `http://localhost:5000`
 ## Project Structure
 
 ```
-flask-backend/
-├── app.py              # Main Flask application
-├── requirements.txt    # Python dependencies
-├── .env               # Environment variables
-├── routes/            # API route modules
+backend/
+├── app.py                    # Main Flask application
+├── requirements.txt          # Python dependencies
+├── .env                      # Environment variables
+├── database_schema.sql       # Database schema
+├── email_service.py          # Email service module
+├── whatsapp_template_setup.py # WhatsApp setup
+├── setup_database.py         # Database initialization
+├── routes/                   # API route modules
 │   ├── ai_analysis.py
-│   ├── reports.py
+│   ├── email_management.py
 │   ├── notifications.py
+│   ├── reports.py
 │   └── upload.py
-└── uploads/           # Uploaded files directory
+└── uploads/                  # Uploaded files directory
 ```
 
 ## Configuration
