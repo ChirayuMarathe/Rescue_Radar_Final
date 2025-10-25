@@ -4,11 +4,15 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === "production",
   },
   images: {
-    domains: ['localhost', 'rescueradar.netlify.app', 'rescueradar-backend.vercel.app'],
-    formats: ['image/webp', 'image/avif'],
+    domains: [
+      "localhost",
+      "rescueradar.netlify.app",
+      "rescueradar-backend.vercel.app",
+    ],
+    formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -26,30 +30,30 @@ const nextConfig = {
         tls: false,
       };
     }
-    
+
     // Optimize bundle size
     if (!dev) {
-      config.optimization.splitChunks.chunks = 'all';
+      config.optimization.splitChunks.chunks = "all";
     }
-    
+
     return config;
   },
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         headers: [
           {
-            key: 'X-Frame-Options',
-            value: 'DENY',
+            key: "X-Frame-Options",
+            value: "DENY",
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            key: "X-Content-Type-Options",
+            value: "nosniff",
           },
           {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
           },
         ],
       },
@@ -60,20 +64,21 @@ const nextConfig = {
       beforeFiles: [
         // Handle static files
         {
-          source: '/static/:path*',
-          destination: '/static/:path*'
-        }
+          source: "/static/:path*",
+          destination: "/static/:path*",
+        },
       ],
       fallback: [
         {
-          source: '/api/:path*',
-          destination: process.env.NODE_ENV === 'production' 
-            ? 'https://rescueradar-backend.vercel.app/api/:path*'
-            : 'http://localhost:5000/api/:path*',
+          source: "/api/:path*",
+          destination:
+            process.env.NODE_ENV === "production"
+              ? "https://rescueradar-backend.vercel.app/api/:path*"
+              : "http://localhost:5000/api/:path*",
         },
       ],
     };
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
