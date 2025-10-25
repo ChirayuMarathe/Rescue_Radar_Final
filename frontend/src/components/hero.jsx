@@ -2,9 +2,24 @@
 import { Play, Heart } from "lucide-react";
 import RotatingText from "./Styles/RotatingText/RotatingText";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function Hero() {
   const router = useRouter();
+  const [imageFailed, setImageFailed] = useState(false);
+
+  // Fallback image URLs if local image fails to load
+  const heroImages = [
+    "/pexels-ifaw-5487067.jpg",
+    "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=1200&h=800&fit=crop", // Dog
+    "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1200&h=800&fit=crop", // Cat
+    "https://images.unsplash.com/photo-1618826411640-d6df44dd3f7a?w=1200&h=800&fit=crop" // Animals
+  ];
+
+  const handleImageError = () => {
+    setImageFailed(true);
+  };
+
   return (
     <section
       id="home"
@@ -12,8 +27,9 @@ export default function Hero() {
     >
       {/* Overlapping background image */}
       <img
-        src="/pexels-ifaw-5487067.jpg"
-        alt="Hero Background"
+        src={imageFailed ? heroImages[1] : heroImages[0]}
+        alt="Hero Background - Rescue Animals"
+        onError={handleImageError}
         className="absolute inset-0 w-full h-full object-cover opacity-60 lg:opacity-70 z-0 pointer-events-none"
         style={{ objectPosition: "center" }}
       />
