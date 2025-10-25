@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
   environment = { NODE_VERSION = "18.20.2" }
 
 [dev]
@@ -24,12 +24,11 @@
   status = 200
   force = true
 
-# SPA fallback - important for Next.js routing
+# SPA fallback - important for static Next.js routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  condition = "!req.headers.accept || req.headers.accept.includes(\"text/html\")"
 
 # Cache headers for static assets
 [[headers]]
@@ -41,6 +40,11 @@
   for = "/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/*.jpg"

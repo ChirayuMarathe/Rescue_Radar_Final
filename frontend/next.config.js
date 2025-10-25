@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export", // Enable static export for Netlify
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
@@ -7,6 +8,7 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === "production",
   },
   images: {
+    unoptimized: true, // Required for static export
     domains: [
       "localhost",
       "rescueradar.netlify.app",
