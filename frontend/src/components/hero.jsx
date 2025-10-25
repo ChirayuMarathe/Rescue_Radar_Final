@@ -12,14 +12,10 @@ export default function Hero() {
     >
       {/* Overlapping background image */}
       <img
-        src="/pexels-ifaw-5487067.jpg"
+        src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop"
         alt="Hero Background"
         className="absolute inset-0 w-full h-full object-cover opacity-60 lg:opacity-70 z-0 pointer-events-none"
         style={{ objectPosition: "center" }}
-        onError={(e) => {
-          // Fallback to external image if local one fails
-          e.target.src = "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop";
-        }}
       />
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-black/40 lg:bg-black/30 z-0" />
